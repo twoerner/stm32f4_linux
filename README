@@ -115,6 +115,10 @@ a new terminal, all you need to do is re-run the:
 line and you'll be all setup to go into the 'code' directory and continue your
 work.
 
+Note that with the right permissions you don't have to become root to run
+st-util. See the installation instructions that come with that tool for more
+information.
+
 
 Notes on this setup
 ===================
