@@ -1,0 +1,473 @@
+diff -urN STM32F4-Discovery_FW_V1.1.0__ORIG/Libraries/CMSIS/ST/STM32F4xx/Include/stm32f4xx_conf.h STM32F4-Discovery_FW_V1.1.0/Libraries/CMSIS/ST/STM32F4xx/Include/stm32f4xx_conf.h
+--- STM32F4-Discovery_FW_V1.1.0__ORIG/Libraries/CMSIS/ST/STM32F4xx/Include/stm32f4xx_conf.h	1969-12-31 19:00:00.000000000 -0500
++++ STM32F4-Discovery_FW_V1.1.0/Libraries/CMSIS/ST/STM32F4xx/Include/stm32f4xx_conf.h	2013-03-05 00:22:49.609688049 -0500
+@@ -0,0 +1,94 @@
++/**
++  ******************************************************************************
++  * @file    stm32f4xx_conf.h  
++  * @author  MCD Application Team
++  * @version V1.0.0
++  * @date    19-September-2011
++  * @brief   Library configuration file.
++  ******************************************************************************
++  * @attention
++  *
++  * THE PRESENT FIRMWARE WHICH IS FOR GUIDANCE ONLY AIMS AT PROVIDING CUSTOMERS
++  * WITH CODING INFORMATION REGARDING THEIR PRODUCTS IN ORDER FOR THEM TO SAVE
++  * TIME. AS A RESULT, STMICROELECTRONICS SHALL NOT BE HELD LIABLE FOR ANY
++  * DIRECT, INDIRECT OR CONSEQUENTIAL DAMAGES WITH RESPECT TO ANY CLAIMS ARISING
++  * FROM THE CONTENT OF SUCH FIRMWARE AND/OR THE USE MADE BY CUSTOMERS OF THE
++  * CODING INFORMATION CONTAINED HEREIN IN CONNECTION WITH THEIR PRODUCTS.
++  *
++  * <h2><center>&copy; COPYRIGHT 2011 STMicroelectronics</center></h2>
++  ******************************************************************************
++  */ 
++
++/* Define to prevent recursive inclusion -------------------------------------*/
++#ifndef __STM32F4xx_CONF_H
++#define __STM32F4xx_CONF_H
++
++#if defined  (HSE_VALUE)
++/* Redefine the HSE value; it's equal to 8 MHz on the STM32F4-DISCOVERY Kit */
++ #undef HSE_VALUE
++ #define HSE_VALUE    ((uint32_t)8000000) 
++#endif /* HSE_VALUE */
++
++/* Includes ------------------------------------------------------------------*/
++/* Uncomment the line below to enable peripheral header file inclusion */
++#include "stm32f4xx_adc.h"
++#include "stm32f4xx_can.h"
++#include "stm32f4xx_crc.h"
++#include "stm32f4xx_cryp.h"
++#include "stm32f4xx_dac.h"
++#include "stm32f4xx_dbgmcu.h"
++#include "stm32f4xx_dcmi.h"
++#include "stm32f4xx_dma.h"
++#include "stm32f4xx_exti.h"
++#include "stm32f4xx_flash.h"
++#include "stm32f4xx_fsmc.h"
++#include "stm32f4xx_hash.h"
++#include "stm32f4xx_gpio.h"
++#include "stm32f4xx_i2c.h"
++#include "stm32f4xx_iwdg.h"
++#include "stm32f4xx_pwr.h"
++#include "stm32f4xx_rcc.h"
++#include "stm32f4xx_rng.h"
++#include "stm32f4xx_rtc.h"
++#include "stm32f4xx_sdio.h"
++#include "stm32f4xx_spi.h"
++#include "stm32f4xx_syscfg.h"
++#include "stm32f4xx_tim.h"
++#include "stm32f4xx_usart.h"
++#include "stm32f4xx_wwdg.h"
++#include "misc.h" /* High level functions for NVIC and SysTick (add-on to CMSIS functions) */
++
++/* Exported types ------------------------------------------------------------*/
++/* Exported constants --------------------------------------------------------*/
++
++/* If an external clock source is used, then the value of the following define 
++   should be set to the value of the external clock source, else, if no external 
++   clock is used, keep this define commented */
++/*#define I2S_EXTERNAL_CLOCK_VAL   12288000 */ /* Value of the external clock in Hz */
++
++
++/* Uncomment the line below to expanse the "assert_param" macro in the 
++   Standard Peripheral Library drivers code */
++/* #define USE_FULL_ASSERT    1 */
++
++/* Exported macro ------------------------------------------------------------*/
++#ifdef  USE_FULL_ASSERT
++
++/**
++  * @brief  The assert_param macro is used for function's parameters check.
++  * @param  expr: If expr is false, it calls assert_failed function
++  *   which reports the name of the source file and the source
++  *   line number of the call that failed. 
++  *   If expr is true, it returns no value.
++  * @retval None
++  */
++  #define assert_param(expr) ((expr) ? (void)0 : assert_failed((uint8_t *)__FILE__, __LINE__))
++/* Exported functions ------------------------------------------------------- */
++  void assert_failed(uint8_t* file, uint32_t line);
++#else
++  #define assert_param(expr) ((void)0)
++#endif /* USE_FULL_ASSERT */
++
++#endif /* __STM32F4xx_CONF_H */
++
++/******************* (C) COPYRIGHT 2011 STMicroelectronics *****END OF FILE****/
+diff -urN STM32F4-Discovery_FW_V1.1.0__ORIG/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_rcc.h STM32F4-Discovery_FW_V1.1.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_rcc.h
+--- STM32F4-Discovery_FW_V1.1.0__ORIG/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_rcc.h	2011-10-28 10:31:22.000000000 -0400
++++ STM32F4-Discovery_FW_V1.1.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_rcc.h	2013-03-05 00:47:08.265513166 -0500
+@@ -29,6 +29,7 @@
+ 
+ /* Includes ------------------------------------------------------------------*/
+ #include "stm32f4xx.h"
++#include "stm32f4xx_conf.h"
+ 
+ /** @addtogroup STM32F4xx_StdPeriph_Driver
+   * @{
+diff -urN STM32F4-Discovery_FW_V1.1.0__ORIG/Libraries/STM32F4xx_StdPeriph_Driver/src/Makefile STM32F4-Discovery_FW_V1.1.0/Libraries/STM32F4xx_StdPeriph_Driver/src/Makefile
+--- STM32F4-Discovery_FW_V1.1.0__ORIG/Libraries/STM32F4xx_StdPeriph_Driver/src/Makefile	1969-12-31 19:00:00.000000000 -0500
++++ STM32F4-Discovery_FW_V1.1.0/Libraries/STM32F4xx_StdPeriph_Driver/src/Makefile	2013-03-05 00:22:49.609688049 -0500
+@@ -0,0 +1,51 @@
++.PHONY: all clean install
++
++ALL = libstm32f4periph.a
++CC = $(CROSS)gcc
++AS = $(CROSS)as
++AR = $(CROSS)ar
++CFLAGS = -I$(PREFIX)/include
++
++all: $(ALL)
++
++OBJS = misc.o \
++	stm32f4xx_adc.o \
++	stm32f4xx_can.o \
++	stm32f4xx_crc.o \
++	stm32f4xx_cryp.o \
++	stm32f4xx_cryp_aes.o \
++	stm32f4xx_cryp_des.o \
++	stm32f4xx_cryp_tdes.o \
++	stm32f4xx_dac.o \
++	stm32f4xx_dbgmcu.o \
++	stm32f4xx_dcmi.o \
++	stm32f4xx_dma.o \
++	stm32f4xx_exti.o \
++	stm32f4xx_flash.o \
++	stm32f4xx_fsmc.o \
++	stm32f4xx_gpio.o \
++	stm32f4xx_hash.o \
++	stm32f4xx_hash_md5.o \
++	stm32f4xx_hash_sha1.o \
++	stm32f4xx_i2c.o \
++	stm32f4xx_iwdg.o \
++	stm32f4xx_pwr.o \
++	stm32f4xx_rcc.o \
++	stm32f4xx_rng.o \
++	stm32f4xx_rtc.o \
++	stm32f4xx_sdio.o \
++	stm32f4xx_spi.o \
++	stm32f4xx_syscfg.o \
++	stm32f4xx_tim.o \
++	stm32f4xx_usart.o \
++	stm32f4xx_wwdg.o
++
++libstm32f4periph.a: $(OBJS)
++	$(AR) rc $@ $^
++
++install: $(ALL)
++	mkdir -p $(PREFIX)/lib
++	cp $^ $(PREFIX)/lib
++
++clean::
++	$(RM) $(ALL) *\.o *\.a
+diff -urN STM32F4-Discovery_FW_V1.1.0__ORIG/Libraries/STM32F4xx_StdPeriph_Driver/src/misc.c STM32F4-Discovery_FW_V1.1.0/Libraries/STM32F4xx_StdPeriph_Driver/src/misc.c
+--- STM32F4-Discovery_FW_V1.1.0__ORIG/Libraries/STM32F4xx_StdPeriph_Driver/src/misc.c	2011-10-28 10:31:22.000000000 -0400
++++ STM32F4-Discovery_FW_V1.1.0/Libraries/STM32F4xx_StdPeriph_Driver/src/misc.c	2013-03-05 00:22:49.609688049 -0500
+@@ -68,6 +68,7 @@
+ 
+ /* Includes ------------------------------------------------------------------*/
+ #include "misc.h"
++#include "stm32f4xx_conf.h"
+ 
+ /** @addtogroup STM32F4xx_StdPeriph_Driver
+   * @{
+diff -urN STM32F4-Discovery_FW_V1.1.0__ORIG/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_adc.c STM32F4-Discovery_FW_V1.1.0/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_adc.c
+--- STM32F4-Discovery_FW_V1.1.0__ORIG/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_adc.c	2011-10-28 10:31:22.000000000 -0400
++++ STM32F4-Discovery_FW_V1.1.0/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_adc.c	2013-03-05 00:42:33.815831624 -0500
+@@ -97,6 +97,7 @@
+ /* Includes ------------------------------------------------------------------*/
+ #include "stm32f4xx_adc.h"
+ #include "stm32f4xx_rcc.h"
++#include "stm32f4xx_conf.h"
+ 
+ /** @addtogroup STM32F4xx_StdPeriph_Driver
+   * @{
+diff -urN STM32F4-Discovery_FW_V1.1.0__ORIG/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_can.c STM32F4-Discovery_FW_V1.1.0/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_can.c
+--- STM32F4-Discovery_FW_V1.1.0__ORIG/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_can.c	2011-10-28 10:31:22.000000000 -0400
++++ STM32F4-Discovery_FW_V1.1.0/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_can.c	2013-03-05 00:44:37.672589405 -0500
+@@ -79,6 +79,7 @@
+ /* Includes ------------------------------------------------------------------*/
+ #include "stm32f4xx_can.h"
+ #include "stm32f4xx_rcc.h"
++#include "stm32f4xx_conf.h"
+ 
+ /** @addtogroup STM32F4xx_StdPeriph_Driver
+   * @{
+diff -urN STM32F4-Discovery_FW_V1.1.0__ORIG/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_cryp.c STM32F4-Discovery_FW_V1.1.0/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_cryp.c
+--- STM32F4-Discovery_FW_V1.1.0__ORIG/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_cryp.c	2011-10-28 10:31:22.000000000 -0400
++++ STM32F4-Discovery_FW_V1.1.0/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_cryp.c	2013-03-05 00:45:01.207733602 -0500
+@@ -158,6 +158,7 @@
+ /* Includes ------------------------------------------------------------------*/
+ #include "stm32f4xx_cryp.h"
+ #include "stm32f4xx_rcc.h"
++#include "stm32f4xx_conf.h"
+ 
+ /** @addtogroup STM32F4xx_StdPeriph_Driver
+   * @{
+diff -urN STM32F4-Discovery_FW_V1.1.0__ORIG/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dac.c STM32F4-Discovery_FW_V1.1.0/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dac.c
+--- STM32F4-Discovery_FW_V1.1.0__ORIG/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dac.c	2011-10-28 10:31:22.000000000 -0400
++++ STM32F4-Discovery_FW_V1.1.0/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dac.c	2013-03-05 00:45:18.455839319 -0500
+@@ -117,6 +117,7 @@
+ /* Includes ------------------------------------------------------------------*/
+ #include "stm32f4xx_dac.h"
+ #include "stm32f4xx_rcc.h"
++#include "stm32f4xx_conf.h"
+ 
+ /** @addtogroup STM32F4xx_StdPeriph_Driver
+   * @{
+diff -urN STM32F4-Discovery_FW_V1.1.0__ORIG/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dbgmcu.c STM32F4-Discovery_FW_V1.1.0/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dbgmcu.c
+--- STM32F4-Discovery_FW_V1.1.0__ORIG/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dbgmcu.c	2011-10-28 10:31:22.000000000 -0400
++++ STM32F4-Discovery_FW_V1.1.0/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dbgmcu.c	2013-03-05 00:45:36.183948016 -0500
+@@ -21,6 +21,7 @@
+ 
+ /* Includes ------------------------------------------------------------------*/
+ #include "stm32f4xx_dbgmcu.h"
++#include "stm32f4xx_conf.h"
+ 
+ /** @addtogroup STM32F4xx_StdPeriph_Driver
+   * @{
+diff -urN STM32F4-Discovery_FW_V1.1.0__ORIG/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dcmi.c STM32F4-Discovery_FW_V1.1.0/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dcmi.c
+--- STM32F4-Discovery_FW_V1.1.0__ORIG/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dcmi.c	2011-10-28 10:31:22.000000000 -0400
++++ STM32F4-Discovery_FW_V1.1.0/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dcmi.c	2013-03-05 00:45:47.800019255 -0500
+@@ -81,6 +81,7 @@
+ /* Includes ------------------------------------------------------------------*/
+ #include "stm32f4xx_dcmi.h"
+ #include "stm32f4xx_rcc.h"
++#include "stm32f4xx_conf.h"
+ 
+ /** @addtogroup STM32F4xx_StdPeriph_Driver
+   * @{
+diff -urN STM32F4-Discovery_FW_V1.1.0__ORIG/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c STM32F4-Discovery_FW_V1.1.0/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c
+--- STM32F4-Discovery_FW_V1.1.0__ORIG/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c	2011-10-28 10:31:22.000000000 -0400
++++ STM32F4-Discovery_FW_V1.1.0/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c	2013-03-05 00:46:00.488097089 -0500
+@@ -115,6 +115,7 @@
+ /* Includes ------------------------------------------------------------------*/
+ #include "stm32f4xx_dma.h"
+ #include "stm32f4xx_rcc.h"
++#include "stm32f4xx_conf.h"
+ 
+ /** @addtogroup STM32F4xx_StdPeriph_Driver
+   * @{
+diff -urN STM32F4-Discovery_FW_V1.1.0__ORIG/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_exti.c STM32F4-Discovery_FW_V1.1.0/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_exti.c
+--- STM32F4-Discovery_FW_V1.1.0__ORIG/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_exti.c	2011-10-28 10:31:22.000000000 -0400
++++ STM32F4-Discovery_FW_V1.1.0/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_exti.c	2013-03-05 00:47:28.713638797 -0500
+@@ -59,6 +59,7 @@
+ 
+ /* Includes ------------------------------------------------------------------*/
+ #include "stm32f4xx_exti.h"
++#include "stm32f4xx_conf.h"
+ 
+ /** @addtogroup STM32F4xx_StdPeriph_Driver
+   * @{
+diff -urN STM32F4-Discovery_FW_V1.1.0__ORIG/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_flash.c STM32F4-Discovery_FW_V1.1.0/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_flash.c
+--- STM32F4-Discovery_FW_V1.1.0__ORIG/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_flash.c	2011-10-28 10:31:22.000000000 -0400
++++ STM32F4-Discovery_FW_V1.1.0/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_flash.c	2013-03-05 00:47:43.368728863 -0500
+@@ -68,6 +68,7 @@
+ 
+ /* Includes ------------------------------------------------------------------*/
+ #include "stm32f4xx_flash.h"
++#include "stm32f4xx_conf.h"
+ 
+ /** @addtogroup STM32F4xx_StdPeriph_Driver
+   * @{
+diff -urN STM32F4-Discovery_FW_V1.1.0__ORIG/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_iwdg.c STM32F4-Discovery_FW_V1.1.0/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_iwdg.c
+--- STM32F4-Discovery_FW_V1.1.0__ORIG/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_iwdg.c	2011-10-28 10:31:22.000000000 -0400
++++ STM32F4-Discovery_FW_V1.1.0/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_iwdg.c	2013-03-05 00:48:26.664995095 -0500
+@@ -80,6 +80,7 @@
+ 
+ /* Includes ------------------------------------------------------------------*/
+ #include "stm32f4xx_iwdg.h"
++#include "stm32f4xx_conf.h"
+ 
+ /** @addtogroup STM32F4xx_StdPeriph_Driver
+   * @{
+diff -urN STM32F4-Discovery_FW_V1.1.0__ORIG/Libraries/STM32_USB_Device_Library/Class/hid/src/Makefile STM32F4-Discovery_FW_V1.1.0/Libraries/STM32_USB_Device_Library/Class/hid/src/Makefile
+--- STM32F4-Discovery_FW_V1.1.0__ORIG/Libraries/STM32_USB_Device_Library/Class/hid/src/Makefile	1969-12-31 19:00:00.000000000 -0500
++++ STM32F4-Discovery_FW_V1.1.0/Libraries/STM32_USB_Device_Library/Class/hid/src/Makefile	2013-03-05 00:22:49.610688054 -0500
+@@ -0,0 +1,21 @@
++.PHONY: all clean install
++
++ALL = libstm32f4usbhid.a
++CC = $(CROSS)gcc
++AS = $(CROSS)as
++AR = $(CROSS)ar
++CFLAGS = -I$(PREFIX)/include
++
++all: $(ALL)
++
++OBJS = usbd_hid_core.o
++
++libstm32f4usbhid.a: $(OBJS)
++	$(AR) rc $@ $^
++
++install: $(ALL)
++	mkdir -p $(PREFIX)/lib
++	cp $^ $(PREFIX)/lib
++
++clean::
++	$(RM) $(ALL) *\.o *\.a
+diff -urN STM32F4-Discovery_FW_V1.1.0__ORIG/Libraries/STM32_USB_Device_Library/Core/src/Makefile STM32F4-Discovery_FW_V1.1.0/Libraries/STM32_USB_Device_Library/Core/src/Makefile
+--- STM32F4-Discovery_FW_V1.1.0__ORIG/Libraries/STM32_USB_Device_Library/Core/src/Makefile	1969-12-31 19:00:00.000000000 -0500
++++ STM32F4-Discovery_FW_V1.1.0/Libraries/STM32_USB_Device_Library/Core/src/Makefile	2013-03-05 00:22:49.610688054 -0500
+@@ -0,0 +1,21 @@
++.PHONY: all clean install
++
++ALL = libstm32f4usbdevice.a
++CC = $(CROSS)gcc
++AS = $(CROSS)as
++AR = $(CROSS)ar
++CFLAGS = -I$(PREFIX)/include
++
++all: $(ALL)
++
++OBJS = usbd_core.o usbd_ioreq.o usbd_req.o
++
++libstm32f4usbdevice.a: $(OBJS)
++	$(AR) rc $@ $^
++
++install: $(ALL)
++	mkdir -p $(PREFIX)/lib
++	cp $^ $(PREFIX)/lib
++
++clean::
++	$(RM) $(ALL) *\.o *\.a
+diff -urN STM32F4-Discovery_FW_V1.1.0__ORIG/Libraries/STM32_USB_OTG_Driver/src/Makefile STM32F4-Discovery_FW_V1.1.0/Libraries/STM32_USB_OTG_Driver/src/Makefile
+--- STM32F4-Discovery_FW_V1.1.0__ORIG/Libraries/STM32_USB_OTG_Driver/src/Makefile	1969-12-31 19:00:00.000000000 -0500
++++ STM32F4-Discovery_FW_V1.1.0/Libraries/STM32_USB_OTG_Driver/src/Makefile	2013-03-05 00:22:49.610688054 -0500
+@@ -0,0 +1,21 @@
++.PHONY: all clean install
++
++ALL = libstm32f4usbotg.a
++CC = $(CROSS)gcc
++AS = $(CROSS)as
++AR = $(CROSS)ar
++CFLAGS = -I$(PREFIX)/include
++
++all: $(ALL)
++
++OBJS = usb_core.o usb_dcd.o usb_dcd_int.o
++
++libstm32f4usbotg.a: $(OBJS)
++	$(AR) rc $@ $^
++
++install: $(ALL)
++	mkdir -p $(PREFIX)/lib
++	cp $^ $(PREFIX)/lib
++
++clean::
++	$(RM) $(ALL) *\.o *\.a
+diff -urN STM32F4-Discovery_FW_V1.1.0__ORIG/Makefile STM32F4-Discovery_FW_V1.1.0/Makefile
+--- STM32F4-Discovery_FW_V1.1.0__ORIG/Makefile	1969-12-31 19:00:00.000000000 -0500
++++ STM32F4-Discovery_FW_V1.1.0/Makefile	2013-03-05 00:22:49.610688054 -0500
+@@ -0,0 +1,40 @@
++.PHONY: all clean install install-headers
++
++PROJ_SUBDIRS = \
++	Utilities/STM32F4-Discovery \
++	Libraries/STM32F4xx_StdPeriph_Driver/src \
++	Libraries/STM32_USB_OTG_Driver/src \
++	Libraries/STM32_USB_Device_Library/Core/src \
++	Libraries/STM32_USB_Device_Library/Class/hid/src
++
++INCLUDE_SUBDIRS = \
++	Libraries/CMSIS/ST/STM32F4xx/Include \
++	Libraries/CMSIS/Include \
++	Utilities/STM32F4-Discovery \
++	Libraries/STM32F4xx_StdPeriph_Driver/inc \
++	Libraries/STM32_USB_OTG_Driver/inc \
++	Libraries/STM32_USB_Device_Library/Core/inc \
++	Libraries/STM32_USB_Device_Library/Class/hid/inc
++
++all: install-headers
++	for DIR in $(PROJ_SUBDIRS); do \
++		make PREFIX=$(PREFIX) -C $$DIR; \
++	done
++
++install: install-headers all
++	for DIR in $(PROJ_SUBDIRS); do \
++		make PREFIX=$(PREFIX) -C $$DIR install; \
++	done
++
++install-headers:
++	mkdir -p $(PREFIX)/include
++	for DIR in $(INCLUDE_SUBDIRS); do \
++		cp -f $$DIR/*h $(PREFIX)/include; \
++	done
++	cp -f Project/Demonstration/stm*h $(PREFIX)/include
++	cp -f Project/Demonstration/usb*h $(PREFIX)/include
++
++clean:
++	for DIR in $(PROJ_SUBDIRS); do \
++		make -C $$DIR clean; \
++	done
+diff -urN STM32F4-Discovery_FW_V1.1.0__ORIG/Project/Demonstration/usb_conf.h STM32F4-Discovery_FW_V1.1.0/Project/Demonstration/usb_conf.h
+--- STM32F4-Discovery_FW_V1.1.0__ORIG/Project/Demonstration/usb_conf.h	2011-10-28 10:31:36.000000000 -0400
++++ STM32F4-Discovery_FW_V1.1.0/Project/Demonstration/usb_conf.h	2013-03-05 00:22:49.610688054 -0500
+@@ -46,7 +46,7 @@
+         compiler preprocessor.
+    */
+ #ifndef USE_USB_OTG_FS
+- //#define USE_USB_OTG_FS
++ #define USE_USB_OTG_FS
+ #endif /* USE_USB_OTG_FS */
+ 
+ #ifdef USE_USB_OTG_FS 
+diff -urN STM32F4-Discovery_FW_V1.1.0__ORIG/Utilities/STM32F4-Discovery/Makefile STM32F4-Discovery_FW_V1.1.0/Utilities/STM32F4-Discovery/Makefile
+--- STM32F4-Discovery_FW_V1.1.0__ORIG/Utilities/STM32F4-Discovery/Makefile	1969-12-31 19:00:00.000000000 -0500
++++ STM32F4-Discovery_FW_V1.1.0/Utilities/STM32F4-Discovery/Makefile	2013-03-05 00:22:49.610688054 -0500
+@@ -0,0 +1,20 @@
++.PHONY: all clean install
++
++ALL = libstm32f4util.a
++CC = $(CROSS)gcc
++AS = $(CROSS)as
++AR = $(CROSS)ar
++CFLAGS = -I$(PREFIX)/include
++
++all: $(ALL)
++
++OBJS = stm32f4_discovery.o stm32f4_discovery_audio_codec.o stm32f4_discovery_lis302dl.o
++libstm32f4util.a: $(OBJS)
++	$(AR) rc $@ $^
++
++install: $(ALL)
++	mkdir -p $(PREFIX)/lib
++	cp $^ $(PREFIX)/lib
++
++clean::
++	$(RM) $(ALL) *\.o
+diff -urN STM32F4-Discovery_FW_V1.1.0__ORIG/Utilities/STM32F4-Discovery/stm32f4_discovery.h STM32F4-Discovery_FW_V1.1.0/Utilities/STM32F4-Discovery/stm32f4_discovery.h
+--- STM32F4-Discovery_FW_V1.1.0__ORIG/Utilities/STM32F4-Discovery/stm32f4_discovery.h	2011-10-28 10:31:58.000000000 -0400
++++ STM32F4-Discovery_FW_V1.1.0/Utilities/STM32F4-Discovery/stm32f4_discovery.h	2013-03-05 00:22:49.611688059 -0500
+@@ -30,6 +30,7 @@
+                                               
+ /* Includes ------------------------------------------------------------------*/
+  #include "stm32f4xx.h"
++ #include "stm32f4xx_conf.h"
+    
+ /** @addtogroup Utilities
+   * @{
+diff -urN STM32F4-Discovery_FW_V1.1.0__ORIG/Utilities/STM32F4-Discovery/stm32f4_discovery_audio_codec.h STM32F4-Discovery_FW_V1.1.0/Utilities/STM32F4-Discovery/stm32f4_discovery_audio_codec.h
+--- STM32F4-Discovery_FW_V1.1.0__ORIG/Utilities/STM32F4-Discovery/stm32f4_discovery_audio_codec.h	2011-10-28 10:31:58.000000000 -0400
++++ STM32F4-Discovery_FW_V1.1.0/Utilities/STM32F4-Discovery/stm32f4_discovery_audio_codec.h	2013-03-05 00:22:49.611688059 -0500
+@@ -27,6 +27,7 @@
+ /* Includes ------------------------------------------------------------------*/
+ #include "stm32f4xx.h"
+ #include "stm32f4xx_gpio.h"
++#include "stm32f4xx_conf.h"
+ 
+ /** @addtogroup Utilities
+   * @{
+diff -urN STM32F4-Discovery_FW_V1.1.0__ORIG/Utilities/STM32F4-Discovery/stm32f4_discovery_lis302dl.h STM32F4-Discovery_FW_V1.1.0/Utilities/STM32F4-Discovery/stm32f4_discovery_lis302dl.h
+--- STM32F4-Discovery_FW_V1.1.0__ORIG/Utilities/STM32F4-Discovery/stm32f4_discovery_lis302dl.h	2011-10-28 10:31:58.000000000 -0400
++++ STM32F4-Discovery_FW_V1.1.0/Utilities/STM32F4-Discovery/stm32f4_discovery_lis302dl.h	2013-03-05 00:22:49.611688059 -0500
+@@ -30,6 +30,7 @@
+ 
+ /* Includes ------------------------------------------------------------------*/
+  #include "stm32f4xx.h"
++ #include "stm32f4xx_conf.h"
+ 
+ /** @addtogroup Utilities
+   * @{

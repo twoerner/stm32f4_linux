@@ -1,0 +1,141 @@
+Working with the STM32F4DISCOVERY Board in Linux
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+March 5, 2013
+
+Motivation
+==========
+
+If you happen to have one of these boards and were interested in working with
+it in an all-Linux environment, then perhaps this project may be of interest
+to you.
+
+This evaluation board is called the STM32F4DISCOVERY and is created by ST
+Microelectronics. ST's website for this board can be found here:
+
+	http://www.st.com/web/en/catalog/tools/PF252419
+
+This board features a STM32 F4 series processor, specifically the
+STM32F407VGT6[1]. This is a Cortex-M4 processor.
+
+Browsing through Dangerous Prototypes' RSS feed one day I came across an
+entry[2] about a free book/tutorial on working with the STM32 board under
+Linux that Geoffrey Brown had put together entitled: "Discovering the STM32
+Microcontroller"[3]. This amazing work focuses on the STM32 F1 family. I
+knew that I had ordered an STM32 board at some point in the past but had
+not yet come around to working with it as of yet. Routing around through my
+electronics bins I discovered that the board I had was not of the F1, but
+rather the F4 family.
+
+With Geoffrey's book I wanted to be able to follow along with my board, so the
+first thing I needed to do was to setup a build environment. Seeing that I'm
+rather fond of cross-compiling, embedded development, and build environments
+in general, this turned into a fun project of its own.
+
+Although the sample code and sample CMSIS code from ST's site is all freely
+down-loadable, it does contain some legalese that makes me nervous. Personally
+I would really enjoy taking their code, re-forming it into something
+that could be build with, say, the autotools, and then pushing that to a
+repository. But since I'm not 100% sure about the legality of redistributing
+their code I came up with this project instead.
+
+The main point of this project is to be able to build their "demo" application
+for the STM32F4. Instead of including that code in this repository and
+providing binaries of the cross-development tools, I wrote a script that will
+download the necessary parts, create the cross-development tools for you, and
+modify ST's code just enough to be able to build and load the demo app for
+yourself onto your own board!
+
+
+To get started
+==============
+
+	$ git clone http://github.com/twoerner/stm32f4_linux
+	$ cd stm32f4_linux
+	$ ./prepare4dev_stm32f4.sh
+
+Check to see that this succeeds for you. Immediately after it completes run:
+
+	$ echo $?
+
+and make sure it returns "0" to you.
+
+Hopefully this will complete successfully (it does for me). I'm using openSUSE
+12.2, but if you're having difficulties it might be because you need to
+install more development tools and libraries on your machine. Try searching
+the Internet if you are seeing errors to see if someone already has a
+solution.
+
+Once you have your cross-development tools in place you'll need to setup your
+environment:
+
+	$ source ./stm32f4.env
+
+To verify everything has been setup okay:
+
+	$stm32f4> cd code/demo
+	$stm32f4> make
+	arm-stm32f4-eabi-gcc -g   -c -o main.o main.c
+	arm-stm32f4-eabi-gcc -g   -c -o selftest.o selftest.c
+	arm-stm32f4-eabi-gcc -g   -c -o stm32f4xx_it.o stm32f4xx_it.c
+	arm-stm32f4-eabi-gcc -g   -c -o usb_bsp.o usb_bsp.c
+	arm-stm32f4-eabi-gcc -g   -c -o usbd_desc.o usbd_desc.c
+	arm-stm32f4-eabi-gcc -g   -c -o usbd_usr.o usbd_usr.c
+	arm-stm32f4-eabi-as   -o startup_stm32f4xx.o startup_stm32f4xx.s
+	arm-stm32f4-eabi-gcc -g   -c -o system_stm32f4xx.o system_stm32f4xx.c
+	arm-stm32f4-eabi-gcc -g -T stm32f407.ld -o demo main.o selftest.o
+	stm32f4xx_it.o usb_bsp.o usbd_desc.o usbd_usr.o startup_stm32f4xx.o
+	system_stm32f4xx.o -nostartfiles -lstm32f4util -lstm32f4usbdevice
+	-lstm32f4usbotg -lstm32f4usbhid -lstm32f4periph
+
+This should succeed. Now you can load this into your STM32F4 Discovery board.
+
+In one terminal "su" to root, setup your environment, and run the st-util
+tool:
+
+	$ su
+	Password:
+	# source ./stm32f4.env
+	#stm32f4> st-util
+
+Now, in a different terminal (as a regular user):
+
+	$stm32f4> arm-stm32f4-eabi-gdb demo
+	(gdb) target extended-remote :4242
+	(gdb) load
+	(gdb) run
+
+Now the board should be running the demo with which it was shipped!
+
+Note that running the prepare4dev_stm32f4.sh script only needs to be ever done
+once. Once your development environment is setup, if you come back to it with
+a new terminal, all you need to do is re-run the:
+
+	$ source ./stm32f4.env
+
+line and you'll be all setup to go into the 'code' directory and continue your
+work.
+
+
+Notes on this setup
+===================
+
+This project makes use of the crosstool-ng project to build the
+cross-compiler[3]. I have configured the cross-tools to already be tuned for
+this specific MCU. As such you don't have to specify things like
+"-mcpu=cortex-m4" or "-mthumb", that's already built into the tools, they'll
+already do that by default.
+
+Also, when I build the ST libraries, I have already installed the archives and
+the header files into locations where the build tools are already looking.
+This way you don't have to specify lots of "-I" options for all the headers or
+lots of "-L" options to find the library archives. Simply #include the
+relevant headers in your code and provide the relevant -l<lib> options to the
+compiler and it'll find everything for you.
+
+
+
+
+[1] http://www.st.com/web/en/catalog/mmc/FM141/SC1169/SS1577/LN11
+[2] http://dangerousprototypes.com/2013/02/20/open-source-stm32-book/
+[3] http://www.micromouseonline.com/2013/02/12/open-source-stm32-book/
+[4] http://crosstool-ng.org/
