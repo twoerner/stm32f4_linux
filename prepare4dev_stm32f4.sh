@@ -284,11 +284,10 @@ pushd local/src/st
 popd
 pushd $PACKAGE_dir/st
 	stow -t ../../arm-stm32f4-eabi/sysroot/lib lib || exit 1
-	stow -t ../../include include || exit 1
+	stow -t ../../arm-stm32f4-eabi/sysroot/usr/include include || exit 1
 popd
 
 # create environment file
 rm -f $ENV_file
-echo "export CPATH=$PREFIX_dir/include" > $ENV_file
 echo "export PATH=$PREFIX_dir/bin:\$PATH" >> $ENV_file
 echo 'export PS1="${PS1}stm32f4> "' >> $ENV_file
