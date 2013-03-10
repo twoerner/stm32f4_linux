@@ -1,5 +1,11 @@
 #!/bin/bash
 
+# Copyright (c) 2013,  Trevor Woerner
+# All rights reserved.
+#
+# This work is provided under a BSD 2-clause style license.
+# See LICENSE in the root directory for more information.
+
 # Run this script to prepare a development environment suitable for
 # working with the stm32f4-discovery board.
 #
