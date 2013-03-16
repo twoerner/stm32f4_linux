@@ -79,27 +79,37 @@ exit_cleanup() {
 	local _dircnt=`dirs -p | wc -l`
 	local _i
 
-	if [ $_dircnt -gt 1 ]; then
-		_dircnt=`expr $_dircnt - 1`
-		for ((_i=0; _i<$_dircnt; ++_i)); do
+	if (( $_dircnt > 1 )); then
+		let _dircnt-=1
+		for ((_i=0; _i<_dircnt; ++_i)); do
 			popd
 		done
 	fi
 
-	if [ $DONTFREE -ne 1 ]; then
+	if (( $DONTFREE != 1 )); then
 		# remove ctng
-		pushd $PACKAGE_dir
-			stow -D $CTNG_stowdir
-			rm -fr $CTNG_stowdir
-		popd
+		if [ -d $PACKAGE_dir ]; then
+			pushd $PACKAGE_dir
+				stow -D $CTNG_stowdir
+				rm -fr $CTNG_stowdir
+			popd
+		fi
 
 		# remove stow
-		pushd local/src/stow-1.3.3
-			make uninstall
-		popd
+		if [ -d local/src/stow-1.3.3 ]; then
+			pushd local/src/stow-1.3.3
+				make uninstall
+			popd
+		fi
 
-		chmod -R 777 local/man local/info local/src
+		chmod -R 777 local/man local/info local/src 2> /dev/null
 		rm -fr local/man local/info local/src local/build
+	fi
+
+	if (( $1 == 0 )); then
+		echo -e "\n\nALL DONE! - success"
+	else
+		echo -e "\n\nBUILD FAILED"
 	fi
 }
 
@@ -116,7 +126,7 @@ remove_downloads() {
 # check cmdline args
 CMDLINE=`getopt -o h -l dont-free,help -n $0 -- "$@"`
 if [ $? -ne 0 ]; then
-	echo "getopt(1) invocation error"
+	echo "getopt(1) invocation error!"
 	exit 1
 fi
 eval set -- "$CMDLINE"
@@ -134,13 +144,13 @@ while [ 1 ]; do
 			break
 			;;
 		*)
-			echo "yoddle"
+			echo "internal getopt(1) error!"
 			;;
 	esac
 	shift
 done
 
-if [ $# -gt 1 ]; then
+if (( $# > 1 )); then
 	echo "invalid cmdline arg count"
 	usage
 	exit 1
@@ -180,7 +190,7 @@ for ((i=0; i<${#REQUIREDTHINGS[*]}; ++i)); do
 	fi
 done
 
-trap exit_cleanup EXIT
+trap 'exit_cleanup $?' EXIT
 
 # get tarballs etc
 mkdir -p Downloads || exit 1
